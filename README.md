@@ -1,6 +1,6 @@
 ## Gun Cases ##
 
-- ESX, QB-Core, QBox compatible
+- ESX 1.9+ compatible
 - Configurable
 - Open Source
 
