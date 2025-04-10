@@ -9,9 +9,10 @@ end
 
 RegisterNetEvent('bandit_guncase:server:pickup', function(item)
     local Player = GetPlayer(source);
+    local inventory = exports.ox_inventory:CanCarryItem(source, item, 1)
 
-    if CanCarryItem(source, item, 1) then
-        AddInventoryItem(source, item, 1)
+    if inventory then
+        return AddInventoryItem(source, item, 1)
     else
         return TriggerClientEvent('bandit_bridge:client:notification', source, 'You can\'t carry that much items.', 'error')
     end
@@ -19,10 +20,11 @@ end)
 
 RegisterNetEvent('bandit_guncase:server:buy', function(item, amount, price)
     local Player = GetPlayer(source);
-    local inventory = GetAccount(source, 'money').money
+    local account = GetAccount(source, 'money').money
+    local inventory = exports.ox_inventory:CanCarryItem(source, item, 1)
 
-    if CanCarryItem(source, item, 1) then
-        if inventory >= price then
+    if inventory then
+        if account >= price then
             RemoveAccountMoney(source, 'money', price)
             AddInventoryItem(source, item, amount)
     

@@ -1,28 +1,31 @@
 local isPlacing, isPicking = false, false
 
 CreateThread(function()
-    for k, v in pairs(Config.Locations) do
+    local shops = Config.Locations.points
+
+    for i = 1, #shops do
+        local shop = shops[i];
         local point = lib.points.new({
-            coords = v.interact.coords,
+            coords = shop.interact.coords,
             distance = 2.5
         })
 
         function point:onEnter()
-            CreateInteraction(k)
+            CreateInteraction(i)
         end
 
         function point:onExit()
-            DeleteInteraction(k)
+            CreateInteraction(i)
         end
 
-        if v.blip.enabled then
-            CreateBlip(k)
+        if shop.blip.enabled then
+            CreateBlip(i)
         end
     end
 end)
 
 function CreateInteraction(index)
-    local data = Config.Locations[index];
+    local data = Config.Locations.points[index];
     local location = data.interact.coords;
     local heading = data.interact.heading;
 
@@ -55,7 +58,7 @@ function DeleteInteraction(index)
 end
 
 function CreateBlip(index)
-    local data = Config.Locations[index];
+    local data = Config.Locations.points[index];
     local blip = AddBlipForCoord(data.interact.coords);
 
     SetBlipSprite(blip, data.blip.sprite)
@@ -70,7 +73,7 @@ function CreateBlip(index)
 end
 
 function BrowseStore(index)
-    local data = Config.Locations[index];
+    local data = Config.Locations.points[index];
     local Options = {};
 
     for _, data in ipairs(data.items) do
@@ -142,7 +145,6 @@ function PlaceObject(index)
             PlaceObjectOnGroundProperly(object)
             FreezeEntityPosition(object, true)
             ClearPedTasksImmediately(ped)
-            TriggerServerEvent('bandit_guncase:server:remove', index)
             isPlacing = false
         end
 
@@ -150,7 +152,7 @@ function PlaceObject(index)
             local options = {
                 {
                     name = 'interact',
-                    icon = 'fas fa-user-secret',
+                    icon = 'fas fa-hand',
                     label = 'Interact',
                     onSelect = function()
                         OpenStash(index)
